@@ -125,6 +125,7 @@ library(stringr)
 library(ROCR)
 library(ggplot2)
 library(cowplot)
+library(GGally)
 
 source("./raucpr/precision_recall.r")
 source("aucpr_rocr_interface.R")
@@ -242,6 +243,8 @@ group_by(top.size.benchmark, gs) %>%
     ungroup %>%
     arrange(mrk)
 
+save_plot(file="benchmark_top_size.pdf",plot=p.bench.hm,ncol=1,nrow=1,base_height=4,device=cairo_pdf,base_aspect_ratio=1.3)
+
 #################################################################
 #################################################################
 #################################################################
@@ -263,7 +266,6 @@ network.benchmark.all %>%
 
 group_by(network.benchmark.all,gs,size,score) %>%
     mutate(aupri=log2(aupri)) %>%
-#    summarise(ymax=log2(median(aupri)+sd(aupri)),ymin=log2(median(aupri)-sd(aupri)),aupri=log2(median(aupri))) %>%
     summarise(ymax=median(aupri)+sd(aupri),ymin=median(aupri)-sd(aupri),aupri=median(aupri)) %>%
     ggplot(aes(x=size,y=aupri,group=gs,colour=gs,ymax=ymax,ymin=ymin))+
     geom_line(size=0.4)+
@@ -276,6 +278,8 @@ group_by(network.benchmark.all,gs,size,score) %>%
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     theme(legend.position="top",axis.line=element_line()) ->
     p.bench.all
+
+save_plot(file="benchmark_sampling.pdf",plot=p.bench.all,ncol=1,nrow=1,base_height=4,device=cairo_pdf,base_aspect_ratio=1.3)
 
 
 #################################################################
@@ -292,4 +296,5 @@ names(p.tf.ind) <- unique(benchmark.tf$gs)
 p.tf.ind <- lapply(p.tf.ind,plotting.modifier)
 p.bench.ind <- plot_grid(plot_grid(p.tf.ind[[1]][2,1], p.tf.ind[[1]][3,1]+labs(title=names(p.tf.ind)[1])+ theme(plot.title = element_text(hjust = 0.5),axis.line=element_line(size=0.5)), p.tf.ind[[1]][3,2],ncol=3,align="h"),plot_grid(p.tf.ind[[2]][2,1], p.tf.ind[[2]][3,1]+labs(title=names(p.tf.ind)[2])+ theme(plot.title = element_text(hjust = 0.5),axis.line=element_line()), p.tf.ind[[2]][3,2],ncol=3,align="h"),plot_grid(p.tf.ind[[3]][2,1], p.tf.ind[[3]][3,1]+labs(title=names(p.tf.ind)[3])+ theme(plot.title = element_text(hjust = 0.5),axis.line=element_line()), p.tf.ind[[3]][3,2],ncol=3,align="h"),plot_grid(p.tf.ind[[4]][2,1], p.tf.ind[[4]][3,1]+labs(title=names(p.tf.ind)[4])+ theme(plot.title = element_text(hjust = 0.5),axis.line=element_line()), p.tf.ind[[4]][3,2],ncol=3,align="h"),align="vh",nrow=4,ncol=1,scale=0.9,vjust=-1)
 
+save_plot(file="benchmark_individual_tfs.pdf",plot=p.bench.ind,ncol=1,nrow=1,base_height=4,device=cairo_pdf,base_aspect_ratio=1.3)
 

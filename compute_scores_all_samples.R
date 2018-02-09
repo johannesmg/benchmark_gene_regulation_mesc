@@ -6,7 +6,7 @@ library(parcor)
 available.transcription.factors <- deframe(read_csv("available_transcription_factors.csv"))
 
 load("expression_set_gpl_6246_full.RData")
-#eset <- eset[available.transcription.factors,]
+eset <- eset[available.transcription.factors,]
 
 pearson.score <- cor(t(eset),method="pearson")
 save(pearson.score,file="pearson_score_6246.RData")
